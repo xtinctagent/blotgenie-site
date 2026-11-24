@@ -66,7 +66,7 @@ section{padding:96px 0}
 .head{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;margin-bottom:40px}
 
 /* hero: white fading into the blue wash */
-.hero{overflow:hidden;padding:64px 0 0;text-align:center;background:
+.hero{overflow:hidden;padding:64px 0 72px;text-align:center;background:
   radial-gradient(900px 520px at 50% 62%,var(--glow),transparent 70%),
   radial-gradient(700px 420px at 12% 10%,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 70%),
   linear-gradient(180deg,var(--bg) 0%,var(--wash) 100%)}
@@ -146,9 +146,12 @@ section{padding:96px 0}
 .ready{display:inline-flex;align-items:center;gap:8px;font-size:15px;color:#B4BCCB}
 .ready::before{content:"";width:8px;height:8px;border-radius:50%;background:#34C759;box-shadow:0 0 10px #34C759}
 
-.hints{display:flex;justify-content:flex-end;gap:18px;padding:9px 16px 10px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--alt) 40%,var(--surface))}
-.hints p{max-width:290px;font-size:12px;line-height:1.4;color:var(--muted)}
+.hints{display:flex;justify-content:flex-end;gap:24px;width:100%;max-width:980px;margin:14px auto 0;text-align:left}
+.hints p{max-width:300px;font-size:12.5px;line-height:1.45;color:var(--muted)}
 .hints b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
+.shots{position:relative;width:100%;max-width:980px;margin:30px auto 0;aspect-ratio:1960/850;border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.shot{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .55s ease}
+.shot.on{opacity:1}
 @media (max-width:900px){.hints{flex-direction:column;align-items:stretch}.hints p{max-width:none}}
 
 /* how: wash fading to neutral */
@@ -283,43 +286,17 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
       <a class="btn link" href="#how">See how it works</a>
     </div>
     <div class="pills"><span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Works offline</span><span>No cloud, no account</span><span>You own your data</span></div>
-    <p class="fine">A 15-second walkthrough plays below. Flip a switch to take over. <button class="replay" id="replay" type="button">Replay</button></p>
-    <div class="window" id="demo" aria-label="Animated demo: a sample lease being redacted. The switches work.">
+    <p class="fine">Real screens from Blot Genie, playing on a loop. <button class="replay" id="replay" type="button">Pause</button></p>
+    <figure class="shots" id="demo" aria-label="Blot Genie redacting a sample lease: the start screen, the lease with six places hidden, the company shown again, and the saved copy.">
+      <img class="shot on" data-k="load" src="shot-load.webp" width="1960" height="850" alt="Blot Genie start screen: Drop a document here, with a Load Document button.">
+      <img class="shot" data-k="review" src="shot-review.webp" width="1960" height="850" alt="The lease in Blot Genie with four findings listed and six places blacked out." loading="lazy">
+      <img class="shot" data-k="shown" src="shot-shown.webp" width="1960" height="850" alt="The company switch turned off, showing both places it appears, with four places still hidden." loading="lazy">
+      <img class="shot" data-k="saved" src="shot-saved.webp" width="1960" height="850" alt="All six places hidden again and the status reading Saved a redacted copy." loading="lazy">
       <div class="cursor" id="cursor" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 2.5v17l4.6-4.2 3 6.9 3.1-1.4-3-6.8H18z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="file"><i></i>Lease agreement.pdf</span></div>
-      <div class="titlebar">
-        <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
-        <b>Lease agreement.pdf</b>
-        <span class="offline" title="This demo runs with Wi-Fi off"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/><path d="M3 3l18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Offline</span>
-        <span class="tool tools-extra">Copy for AI</span>
-        <span class="tool go" id="savebtn">Save Copy</span>
-      </div>
-      <div class="hints">
-        <p><b>Copy for AI</b>Copy reviewed text to paste into a chat. If the same hidden name appears twice, both places get the same label, like [Person 1]. You choose where to paste it. Drew boxes over part of a page? Use Save Copy.</p>
-        <p><b>Save Copy</b>Save a file to share. A reviewed PDF keeps the page layout and black bars.</p>
-      </div>
-      <div class="app">
-        <div class="side">
-          <p class="cap">Found in this document</p>
-          <div class="group">
-            <label class="row"><div><b>Jordan Avery</b><span>Name · 2 places</span></div><input class="sw" type="checkbox" id="sw-name" data-g="name" checked aria-label="Hide the name Jordan Avery"></label>
-            <label class="row"><div><b>Harbourline Property Group</b><span>Company · 2 places</span></div><input class="sw" type="checkbox" id="sw-co" data-g="co" checked aria-label="Hide the company Harbourline Property Group"></label>
-            <label class="row"><div><b>14 Larkspur Court, Unit 3</b><span>Address · 1 place</span></div><input class="sw" type="checkbox" id="sw-addr" data-g="addr" checked aria-label="Hide the address"></label>
-            <label class="row"><div><b>6620 4418 07</b><span>Number · 1 place</span></div><input class="sw" type="checkbox" id="sw-acct" data-g="acct" checked aria-label="Hide the number"></label>
-          </div>
-          <p class="count" id="count" aria-live="polite">6 places hidden. Flip a switch to try it.</p>
-        </div>
-        <div class="canvas">
-          <div class="paper">
-            <strong>RESIDENTIAL LEASE AGREEMENT</strong>
-            <p>This lease is made between <span class="s on" data-g="co">Harbourline Property Group</span> ("Landlord") and <span class="s on" data-g="name">Jordan Avery</span> ("Tenant").</p>
-            <p>1. Premises. The Landlord lets the dwelling at <span class="s on" data-g="addr">14 Larkspur Court, Unit 3</span> to <span class="s on" data-g="name">Jordan Avery</span> as a private residence.</p>
-            <p>2. Rent. Rent is due on the first of each month by transfer to account <span class="s on" data-g="acct">6620 4418 07</span>.</p>
-            <p>3. Notices. Notices to the Landlord go to <span class="s on" data-g="co">Harbourline Property Group</span> at the address above.</p>
-          </div>
-          <div class="drop" aria-hidden="true"><b>Drop a document here</b><span>PDF, Word, Excel, scans and photos</span></div>
-          <span class="capsule" id="capsule">Everything stays on this Mac</span>
-        </div>
-      </div>
+    </figure>
+    <div class="hints">
+      <p><b>Copy for AI</b>Copy reviewed text to paste into a chat. If the same hidden name appears twice, both places get the same label, like [Person 1]. You choose where to paste it. Drew boxes over part of a page? Use Save Copy.</p>
+      <p><b>Save Copy</b>Save a file to share. A reviewed PDF keeps the page layout and black bars.</p>
     </div>
   </div>
 </div>
@@ -485,92 +462,39 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
 
 <script>
 (function () {
-  var count = document.getElementById('count');
-  function refresh() {
-    var n = document.querySelectorAll('.s.on').length;
-    count.textContent = n === 0 ? 'Nothing hidden.' : n + (n === 1 ? ' place hidden.' : ' places hidden.');
-  }
-  document.querySelectorAll('.sw').forEach(function (sw) {
-    sw.addEventListener('change', function () {
-      document.querySelectorAll('.s[data-g="' + sw.dataset.g + '"]').forEach(function (el) {
-        el.classList.toggle('on', sw.checked);
-      });
-      refresh();
-    });
-  });
-  // ---- animated walkthrough ----
-  var demo = document.getElementById('demo'), cur = document.getElementById('cursor'),
-      cap = document.getElementById('capsule'), save = document.getElementById('savebtn'),
-      rows = [].slice.call(demo.querySelectorAll('.row')), groups = ['name', 'co', 'addr', 'acct'],
-      runId = 0, CAP = cap.textContent;
-  function spans(g) { return [].slice.call(demo.querySelectorAll('.s[data-g="' + g + '"]')); }
-  function sleep(ms, id) { return new Promise(function (ok, no) { setTimeout(function () { id === runId ? ok() : no(); }, ms); }); }
-  function at(el, fx, fy) {
-    var w = demo.getBoundingClientRect(), r = el.getBoundingClientRect();
-    cur.style.transform = 'translate(' + (r.left - w.left + r.width * fx) + 'px,' + (r.top - w.top + r.height * fy) + 'px)';
-  }
-  function tap(id) { cur.classList.add('tap'); return sleep(160, id).then(function () { cur.classList.remove('tap'); }); }
-  function setSwitch(g, on) {
-    var sw = demo.querySelector('.sw[data-g="' + g + '"]');
-    sw.checked = on; sw.dispatchEvent(new Event('change'));
-  }
-  function settle() { // the finished, fully interactive state
-    demo.removeAttribute('data-stage'); cur.style.opacity = 0; cur.classList.remove('drag');
-    cap.textContent = CAP; cap.classList.remove('saved'); save.classList.remove('tap');
-    rows.forEach(function (r) { r.classList.remove('hide'); });
-    groups.forEach(function (g) {
-      var on = demo.querySelector('.sw[data-g="' + g + '"]').checked;
-      spans(g).forEach(function (el) { el.classList.remove('plain'); el.classList.toggle('on', on); });
-    });
-    refresh();
-  }
+  // ---- walkthrough over real app screenshots ----
+  var demo = document.getElementById('demo'), cur = document.getElementById('cursor'), btn = document.getElementById('replay');
+  var shots = {};
+  [].forEach.call(demo.querySelectorAll('.shot'), function (img) { shots[img.dataset.k] = img; });
+  var run = 0;
+  function show(k) { for (var x in shots) shots[x].classList.toggle('on', x === k); }
+  function sleep(ms, id) { return new Promise(function (ok, no) { setTimeout(function () { id === run ? ok() : no(); }, ms); }); }
+  function at(fx, fy) { cur.style.transform = 'translate(' + demo.clientWidth * fx + 'px,' + demo.clientHeight * fy + 'px)'; }
+  function tap(id) { cur.classList.add('tap'); return sleep(170, id).then(function () { cur.classList.remove('tap'); }); }
   function play() {
-    var id = ++runId, canvas = demo.querySelector('.canvas');
-    // opening state: empty window waiting for a file
-    demo.setAttribute('data-stage', 'drop');
-    cap.textContent = CAP; cap.classList.remove('saved');
-    rows.forEach(function (r) { r.classList.add('hide'); });
-    groups.forEach(function (g) {
-      demo.querySelector('.sw[data-g="' + g + '"]').checked = true;
-      spans(g).forEach(function (el) { el.classList.add('plain'); el.classList.remove('on'); });
-    });
-    count.textContent = 'Waiting for a document.';
-    cur.style.transition = 'none'; at(demo, 0.9, 0.02); cur.classList.add('drag');
+    var id = ++run; btn.textContent = 'Pause';
+    show('load'); cur.style.transition = 'none'; at(0.93, 0.08); cur.classList.add('drag');
     cur.getBoundingClientRect(); cur.style.transition = ''; cur.style.opacity = 1;
-    sleep(700, id).then(function () { at(canvas, 0.45, 0.42); return sleep(1150, id); })
+    sleep(700, id)
+    .then(function () { at(0.5, 0.55); return sleep(1200, id); })
     .then(function () { return tap(id); })
-    .then(function () { cur.classList.remove('drag'); demo.setAttribute('data-stage', 'scan'); count.textContent = 'Reading on this Mac…'; return sleep(1400, id); })
-    .then(function () { // findings appear one by one
-      demo.setAttribute('data-stage', 'review');
-      return groups.reduce(function (p, g, i) {
-        return p.then(function () { rows[i].classList.remove('hide'); spans(g).forEach(function (el) { el.classList.remove('plain'); }); return sleep(330, id); });
-      }, Promise.resolve());
-    })
-    .then(function () { return sleep(450, id); })
-    .then(function () { // and are blacked out
-      return groups.reduce(function (p, g) {
-        return p.then(function () { spans(g).forEach(function (el) { el.classList.add('on'); }); refresh(); return sleep(240, id); });
-      }, Promise.resolve());
-    })
-    .then(function () { return sleep(700, id); })
-    .then(function () { at(demo.querySelector('.sw[data-g="co"]'), 0.5, 0.5); return sleep(1050, id); })
+    .then(function () { cur.classList.remove('drag'); show('review'); return sleep(1700, id); })
+    .then(function () { at(0.249, 0.338); return sleep(1100, id); })            // company switch
     .then(function () { return tap(id); })
-    .then(function () { setSwitch('co', false); return sleep(1500, id); })
+    .then(function () { show('shown'); return sleep(2300, id); })
     .then(function () { return tap(id); })
-    .then(function () { setSwitch('co', true); return sleep(800, id); })
-    .then(function () { at(save, 0.5, 0.55); return sleep(1050, id); })
-    .then(function () { save.classList.add('tap'); return tap(id); })
-    .then(function () { save.classList.remove('tap'); cap.textContent = 'Saved a redacted copy'; cap.classList.add('saved'); return sleep(2600, id); })
+    .then(function () { show('review'); return sleep(900, id); })
+    .then(function () { at(0.904, 0.113); return sleep(1100, id); })            // Save Copy
+    .then(function () { return tap(id); })
+    .then(function () { show('saved'); return sleep(2900, id); })
     .then(function () { cur.style.opacity = 0; return sleep(700, id); })
-    .then(function () { play(); })
-    .catch(function () {});
+    .then(play).catch(function () {});
   }
-  function stop() { runId++; settle(); }
-  demo.addEventListener('pointerdown', function (e) { if (e.isTrusted) stop(); }, true);
-  demo.addEventListener('keydown', function (e) { if (e.isTrusted) stop(); }, true);
-  document.getElementById('replay').addEventListener('click', play);
+  function pause() { run++; btn.textContent = 'Play'; cur.style.opacity = 0; cur.classList.remove('drag'); }
+  btn.addEventListener('click', function () { btn.textContent === 'Pause' ? pause() : play(); });
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!calm && 'IntersectionObserver' in window) {
+  if (calm) { show('review'); btn.textContent = 'Play'; }
+  else if ('IntersectionObserver' in window) {
     var started = false;
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting && !started) { started = true; play(); } });
