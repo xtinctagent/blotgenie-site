@@ -154,6 +154,10 @@ section{padding:96px 0}
 .shot.on{opacity:1}
 @media (max-width:900px){.hints{flex-direction:column;align-items:stretch}.hints p{max-width:none}}
 
+.clip{grid-column:1/-1;margin:0;border-radius:26px;overflow:hidden;background:var(--surface);border:1px solid var(--line);box-shadow:0 18px 44px rgba(16,28,56,.12)}
+.clip video{display:block;width:100%;height:auto;aspect-ratio:1600/694;background:#fff}
+.clip figcaption{padding:14px 20px 16px;font-size:14px;line-height:1.45;color:var(--muted)}
+
 /* how: wash fading to neutral */
 #how{background:linear-gradient(180deg,var(--wash) 0%,var(--alt) 100%)}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0;counter-reset:n}
@@ -332,12 +336,13 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
       </div>
       <div class="card rise">
         <h3>A safe way to ask a chatbot.</h3>
-        <p class="muted">Copy for AI swaps real details for stand-ins before you paste.</p>
-        <div class="chat" aria-label="Example chat with stand-ins">
-          <p class="you">Can <em>[Company 1]</em> raise the rent on <em>[Person 1]</em> before the lease ends?</p>
-          <p class="bot">Check the lease for a rent review clause. That decides what <em>[Company 1]</em> can do.</p>
-        </div>
+        <p class="muted">Copy for AI swaps real details for labels like [Person 1] before you paste. The same name always gets the same label.</p>
+        <div class="tags" style="margin-top:auto;padding-top:18px" aria-label="Labels from the sample lease"><span class="tag">[Company 1]</span><span class="tag">[Person 1]</span><span class="tag">[Address 1]</span><span class="tag">[Account 1]</span></div>
       </div>
+      <figure class="clip rise">
+        <video id="aiclip" src="copy-for-ai.mp4" poster="copy-for-ai-poster.jpg" width="1600" height="694" muted loop playsinline autoplay preload="metadata" aria-label="Recording: Copy for AI on the sample lease, then pasting the labelled text into a text window."></video>
+        <figcaption>A real recording. Copy for AI turns the lease's six hidden places into [Company 1], [Person 1], [Address 1] and [Account 1], and the text is pasted into a plain text window. Nothing leaves the Mac.</figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -500,6 +505,17 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
   function pause() { run++; btn.textContent = 'Play'; cur.style.opacity = 0; cur.classList.remove('drag'); }
   btn.addEventListener('click', function () { btn.textContent === 'Pause' ? pause() : play(); });
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var clip = document.getElementById('aiclip');
+  if (calm) { clip.removeAttribute('autoplay'); clip.pause(); clip.controls = true; }
+  else {
+    // Play while on screen; if the browser blocks autoplay, show the controls so a tap starts it.
+    var tryPlay = function () { var p = clip.play(); if (p && p.catch) p.catch(function () { clip.controls = true; }); };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) tryPlay(); else clip.pause(); });
+      }, { threshold: 0.25 }).observe(clip);
+    } else { tryPlay(); }
+  }
   if (calm) { show('review'); btn.textContent = 'Play'; }
   else if ('IntersectionObserver' in window) {
     var started = false;
