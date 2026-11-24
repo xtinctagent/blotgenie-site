@@ -146,6 +146,11 @@ section{padding:96px 0}
 .ready{display:inline-flex;align-items:center;gap:8px;font-size:15px;color:#B4BCCB}
 .ready::before{content:"";width:8px;height:8px;border-radius:50%;background:#34C759;box-shadow:0 0 10px #34C759}
 
+.hints{display:flex;justify-content:flex-end;gap:18px;padding:9px 16px 10px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--alt) 40%,var(--surface))}
+.hints p{max-width:290px;font-size:12px;line-height:1.4;color:var(--muted)}
+.hints b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
+@media (max-width:900px){.hints{flex-direction:column;align-items:stretch}.hints p{max-width:none}}
+
 /* how: wash fading to neutral */
 #how{background:linear-gradient(180deg,var(--wash) 0%,var(--alt) 100%)}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0;counter-reset:n}
@@ -288,6 +293,10 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
         <span class="tool tools-extra">Copy for AI</span>
         <span class="tool go" id="savebtn">Save Copy</span>
       </div>
+      <div class="hints">
+        <p><b>Copy for AI</b>Copy reviewed text to paste into a chat. If the same hidden name appears twice, both places get the same label, like [Person 1]. You choose where to paste it. Drew boxes over part of a page? Use Save Copy.</p>
+        <p><b>Save Copy</b>Save a file to share. A reviewed PDF keeps the page layout and black bars.</p>
+      </div>
       <div class="app">
         <div class="side">
           <p class="cap">Found in this document</p>
@@ -295,7 +304,7 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
             <label class="row"><div><b>Jordan Avery</b><span>Name · 2 places</span></div><input class="sw" type="checkbox" id="sw-name" data-g="name" checked aria-label="Hide the name Jordan Avery"></label>
             <label class="row"><div><b>Harbourline Property Group</b><span>Company · 2 places</span></div><input class="sw" type="checkbox" id="sw-co" data-g="co" checked aria-label="Hide the company Harbourline Property Group"></label>
             <label class="row"><div><b>14 Larkspur Court, Unit 3</b><span>Address · 1 place</span></div><input class="sw" type="checkbox" id="sw-addr" data-g="addr" checked aria-label="Hide the address"></label>
-            <label class="row"><div><b>6620 4418 07</b><span>Bank account · 1 place</span></div><input class="sw" type="checkbox" id="sw-acct" data-g="acct" checked aria-label="Hide the bank account number"></label>
+            <label class="row"><div><b>6620 4418 07</b><span>Number · 1 place</span></div><input class="sw" type="checkbox" id="sw-acct" data-g="acct" checked aria-label="Hide the number"></label>
           </div>
           <p class="count" id="count" aria-live="polite">6 places hidden. Flip a switch to try it.</p>
         </div>
