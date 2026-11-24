@@ -104,6 +104,32 @@ section{padding:96px 0}
 .capsule{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:500;padding:7px 14px;border-radius:999px;color:#1D1D1F;background:rgba(255,255,255,.72);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,.9);box-shadow:0 6px 20px rgba(0,0,0,.14)}
 .capsule::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#34C759;margin-right:8px;vertical-align:1px}
 
+/* animated walkthrough inside the hero window */
+.window{position:relative}
+.cursor{position:absolute;left:0;top:0;width:24px;height:24px;z-index:6;pointer-events:none;opacity:0;transition:transform .95s cubic-bezier(.45,.05,.2,1),opacity .35s ease;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.cursor svg{display:block;transition:scale .15s ease}
+.cursor.tap svg{scale:.8}
+.cursor .file{position:absolute;left:16px;top:16px;display:none;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.18);font-size:12px;font-weight:600;white-space:nowrap;color:var(--ink)}
+.cursor.drag .file{display:flex}
+.cursor .file i{width:14px;height:17px;border-radius:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:block}
+.drop{position:absolute;inset:28px 28px 0;border:2px dashed color-mix(in srgb,var(--accent) 45%,transparent);border-bottom:0;border-radius:14px 14px 0 0;display:flex;flex-direction:column;gap:6px;align-items:center;justify-content:center;text-align:center;background:color-mix(in srgb,var(--tint) 60%,var(--surface));color:var(--muted);font-size:14px;opacity:0;pointer-events:none;transition:opacity .45s ease}
+.drop b{font-size:17px;color:var(--ink);font-family:var(--display)}
+.window[data-stage="drop"] .drop{opacity:1}
+.paper{position:relative;transition:opacity .45s ease}
+.window[data-stage="drop"] .paper,.window[data-stage="drop"] .capsule{opacity:0}
+.capsule{transition:opacity .4s ease,background .3s ease}
+.capsule.saved{background:rgba(52,199,89,.92);color:#fff;border-color:transparent}
+.capsule.saved::before{background:#fff}
+.row{transition:opacity .4s ease,transform .4s ease}
+.row.hide{opacity:0;transform:translateY(8px)}
+.s.plain{background:transparent}
+.window[data-stage="scan"] .paper::after{content:"";position:absolute;left:0;right:0;top:0;height:70px;background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--accent) 26%,transparent),transparent);animation:scan 1.3s ease-in-out}
+@keyframes scan{from{transform:translateY(-40px)}to{transform:translateY(300px)}}
+.tool.go{transition:scale .15s ease,box-shadow .2s ease}
+.tool.go.tap{scale:.94;box-shadow:0 0 0 6px var(--glow)}
+.replay{font:inherit;font-size:13px;color:var(--accent);background:none;border:0;padding:0;cursor:pointer}
+.replay:hover{text-decoration:underline}
+
 /* how: wash fading to neutral */
 #how{background:linear-gradient(180deg,var(--wash) 0%,var(--alt) 100%)}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0;counter-reset:n}
@@ -235,12 +261,14 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
       <span class="btn primary" role="note">Coming soon to the Mac App Store</span>
       <a class="btn link" href="#how">See how it works</a>
     </div>
-    <div class="window" aria-label="Try it: a sample lease with private details">
+    <p class="fine">A 15-second walkthrough plays below. Flip a switch to take over. <button class="replay" id="replay" type="button">Replay</button></p>
+    <div class="window" id="demo" aria-label="Animated demo: a sample lease being redacted. The switches work.">
+      <div class="cursor" id="cursor" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 2.5v17l4.6-4.2 3 6.9 3.1-1.4-3-6.8H18z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><span class="file"><i></i>Lease agreement.pdf</span></div>
       <div class="titlebar">
         <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
         <b>Lease agreement.pdf</b>
         <span class="tool tools-extra">Copy for AI</span>
-        <span class="tool go">Save Copy</span>
+        <span class="tool go" id="savebtn">Save Copy</span>
       </div>
       <div class="app">
         <div class="side">
@@ -261,7 +289,8 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
             <p>2. Rent. Rent is due on the first of each month by transfer to account <span class="s on" data-g="acct">6620 4418 07</span>.</p>
             <p>3. Notices. Notices to the Landlord go to <span class="s on" data-g="co">Harbourline Property Group</span> at the address above.</p>
           </div>
-          <span class="capsule">Everything stays on this Mac</span>
+          <div class="drop" aria-hidden="true"><b>Drop a document here</b><span>PDF, Word, Excel, scans and photos</span></div>
+          <span class="capsule" id="capsule">Everything stays on this Mac</span>
         </div>
       </div>
     </div>
@@ -442,6 +471,85 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
       refresh();
     });
   });
+  // ---- animated walkthrough ----
+  var demo = document.getElementById('demo'), cur = document.getElementById('cursor'),
+      cap = document.getElementById('capsule'), save = document.getElementById('savebtn'),
+      rows = [].slice.call(demo.querySelectorAll('.row')), groups = ['name', 'co', 'addr', 'acct'],
+      runId = 0, CAP = cap.textContent;
+  function spans(g) { return [].slice.call(demo.querySelectorAll('.s[data-g="' + g + '"]')); }
+  function sleep(ms, id) { return new Promise(function (ok, no) { setTimeout(function () { id === runId ? ok() : no(); }, ms); }); }
+  function at(el, fx, fy) {
+    var w = demo.getBoundingClientRect(), r = el.getBoundingClientRect();
+    cur.style.transform = 'translate(' + (r.left - w.left + r.width * fx) + 'px,' + (r.top - w.top + r.height * fy) + 'px)';
+  }
+  function tap(id) { cur.classList.add('tap'); return sleep(160, id).then(function () { cur.classList.remove('tap'); }); }
+  function setSwitch(g, on) {
+    var sw = demo.querySelector('.sw[data-g="' + g + '"]');
+    sw.checked = on; sw.dispatchEvent(new Event('change'));
+  }
+  function settle() { // the finished, fully interactive state
+    demo.removeAttribute('data-stage'); cur.style.opacity = 0; cur.classList.remove('drag');
+    cap.textContent = CAP; cap.classList.remove('saved'); save.classList.remove('tap');
+    rows.forEach(function (r) { r.classList.remove('hide'); });
+    groups.forEach(function (g) {
+      var on = demo.querySelector('.sw[data-g="' + g + '"]').checked;
+      spans(g).forEach(function (el) { el.classList.remove('plain'); el.classList.toggle('on', on); });
+    });
+    refresh();
+  }
+  function play() {
+    var id = ++runId, canvas = demo.querySelector('.canvas');
+    // opening state: empty window waiting for a file
+    demo.setAttribute('data-stage', 'drop');
+    cap.textContent = CAP; cap.classList.remove('saved');
+    rows.forEach(function (r) { r.classList.add('hide'); });
+    groups.forEach(function (g) {
+      demo.querySelector('.sw[data-g="' + g + '"]').checked = true;
+      spans(g).forEach(function (el) { el.classList.add('plain'); el.classList.remove('on'); });
+    });
+    count.textContent = 'Waiting for a document.';
+    cur.style.transition = 'none'; at(demo, 0.9, 0.02); cur.classList.add('drag');
+    cur.getBoundingClientRect(); cur.style.transition = ''; cur.style.opacity = 1;
+    sleep(700, id).then(function () { at(canvas, 0.45, 0.42); return sleep(1150, id); })
+    .then(function () { return tap(id); })
+    .then(function () { cur.classList.remove('drag'); demo.setAttribute('data-stage', 'scan'); count.textContent = 'Reading on this Mac…'; return sleep(1400, id); })
+    .then(function () { // findings appear one by one
+      demo.setAttribute('data-stage', 'review');
+      return groups.reduce(function (p, g, i) {
+        return p.then(function () { rows[i].classList.remove('hide'); spans(g).forEach(function (el) { el.classList.remove('plain'); }); return sleep(330, id); });
+      }, Promise.resolve());
+    })
+    .then(function () { return sleep(450, id); })
+    .then(function () { // and are blacked out
+      return groups.reduce(function (p, g) {
+        return p.then(function () { spans(g).forEach(function (el) { el.classList.add('on'); }); refresh(); return sleep(240, id); });
+      }, Promise.resolve());
+    })
+    .then(function () { return sleep(700, id); })
+    .then(function () { at(demo.querySelector('.sw[data-g="co"]'), 0.5, 0.5); return sleep(1050, id); })
+    .then(function () { return tap(id); })
+    .then(function () { setSwitch('co', false); return sleep(1500, id); })
+    .then(function () { return tap(id); })
+    .then(function () { setSwitch('co', true); return sleep(800, id); })
+    .then(function () { at(save, 0.5, 0.55); return sleep(1050, id); })
+    .then(function () { save.classList.add('tap'); return tap(id); })
+    .then(function () { save.classList.remove('tap'); cap.textContent = 'Saved a redacted copy'; cap.classList.add('saved'); return sleep(2600, id); })
+    .then(function () { cur.style.opacity = 0; return sleep(700, id); })
+    .then(function () { play(); })
+    .catch(function () {});
+  }
+  function stop() { runId++; settle(); }
+  demo.addEventListener('pointerdown', function (e) { if (e.isTrusted) stop(); }, true);
+  demo.addEventListener('keydown', function (e) { if (e.isTrusted) stop(); }, true);
+  document.getElementById('replay').addEventListener('click', play);
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!calm && 'IntersectionObserver' in window) {
+    var started = false;
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting && !started) { started = true; play(); } });
+    }, { threshold: 0.35 }).observe(demo);
+  }
+
   var m = document.getElementById('bill-month'), y = document.getElementById('bill-year');
   function bill(yearly) {
     m.setAttribute('aria-pressed', String(!yearly));
