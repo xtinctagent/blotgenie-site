@@ -206,8 +206,8 @@ section{padding:96px 0}
 .seg{display:inline-flex;padding:3px;border-radius:999px;background:color-mix(in srgb,var(--muted) 16%,transparent);gap:2px;margin-top:6px}
 .seg button{font:inherit;font-size:14px;font-weight:500;padding:7px 18px;border-radius:999px;border:0;background:transparent;color:var(--ink);cursor:pointer;transition:background .25s,box-shadow .25s}
 .seg button[aria-pressed="true"]{background:var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.14)}
-.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:760px;margin:0 auto}
-.plan{gap:12px}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1000px;margin:0 auto}
+.plan{gap:12px;position:relative}.plan .badge{position:absolute;top:24px;right:24px}
 .plan.best{border:1px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,var(--accent),var(--accent2)) border-box;box-shadow:0 18px 44px var(--glow)}
 .price{font-family:var(--display);font-size:46px;font-weight:700;letter-spacing:-0.04em;line-height:1;font-variant-numeric:tabular-nums}
 .price small{font-size:15px;font-weight:500;color:var(--muted);letter-spacing:-0.01em;margin-left:4px}
@@ -392,7 +392,7 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
   <div class="wrap">
     <div class="head rise">
       <h2>Free to start.</h2>
-      <p class="lead">3 saved documents and 3 Copy for AI uses a month, free. Unlimited for $4.99 a month, or $39.99 a year.</p>
+      <p class="lead">3 saved documents and 3 Copy for AI uses a month, free. Need more? Plus gives you 20 of each for $4.99 a month. Pro is unlimited for $9.99.</p>
       <div class="seg" role="group" aria-label="Billing period">
         <button type="button" id="bill-month" aria-pressed="true">Monthly</button>
         <button type="button" id="bill-year" aria-pressed="false">Yearly · save 33%</button>
@@ -404,11 +404,16 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
         <p class="price">$0</p>
         <ul><li>3 saved documents a month</li><li>3 Copy for AI uses a month</li><li>Automatic detection</li><li>Works offline</li></ul>
       </div>
+      <div class="card plan rise">
+        <h3>Plus</h3>
+        <p class="price"><span data-m="$4.99" data-y="$39.99">$4.99</span><small data-m="per month" data-y="per year">per month</small></p>
+        <ul><li>20 saved documents a month</li><li>20 Copy for AI uses a month</li><li>Your own replacement rules</li><li>Works offline</li></ul>
+      </div>
       <div class="card plan best rise">
         <span class="badge">Unlimited</span>
         <h3>Pro</h3>
-        <p class="price"><span data-m="$4.99" data-y="$39.99">$4.99</span><small data-m="per month" data-y="per year">per month</small></p>
-        <ul><li>Unlimited saved documents</li><li>Unlimited Copy for AI</li><li>Redaction certificates</li><li>Whole-folder redaction</li><li>Your own replacement rules</li></ul>
+        <p class="price"><span data-m="$9.99" data-y="$79.99">$9.99</span><small data-m="per month" data-y="per year">per month</small></p>
+        <ul><li>Unlimited saved documents</li><li>Unlimited Copy for AI</li><li>Whole-folder redaction</li><li>Redaction certificates</li><li>Everything in Plus</li></ul>
       </div>
     </div>
     <div class="offer rise">
