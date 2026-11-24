@@ -406,7 +406,11 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
   <div class="wrap">
     <div class="head rise">
       <h2>Free to start.</h2>
-      <p class="lead">3 saved documents and 3 Copy for AI uses a month, free. Unlimited for $4.99 a month.</p>
+      <p class="lead">3 saved documents and 3 Copy for AI uses a month, free. Unlimited for $4.99 a month, or $39.99 a year.</p>
+      <div class="seg" role="group" aria-label="Billing period">
+        <button type="button" id="bill-month" aria-pressed="true">Monthly</button>
+        <button type="button" id="bill-year" aria-pressed="false">Yearly · save 33%</button>
+      </div>
     </div>
     <div class="plans">
       <div class="card plan rise">
@@ -417,7 +421,7 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
       <div class="card plan best rise">
         <span class="badge">Unlimited</span>
         <h3>Pro</h3>
-        <p class="price">$4.99<small>per month</small></p>
+        <p class="price"><span data-m="$4.99" data-y="$39.99">$4.99</span><small data-m="per month" data-y="per year">per month</small></p>
         <ul><li>Unlimited saved documents</li><li>Unlimited Copy for AI</li><li>Redaction certificates</li><li>Whole-folder redaction</li><li>Your own replacement rules</li></ul>
       </div>
     </div>
@@ -436,7 +440,7 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
         <p class="muted">Rub the lamp early. Details on how to claim a spot are coming soon.</p>
       </div>
     </div>
-    <p class="fine" style="text-align:center;margin-top:18px">Planned launch price in US dollars, billed monthly through the App Store. Cancel any time.</p>
+    <p class="fine" style="text-align:center;margin-top:18px">Planned launch prices in US dollars, billed through the App Store. Cancel any time.</p>
   </div>
 </section>
 
@@ -564,6 +568,16 @@ footer .wrap{display:flex;gap:8px 24px;flex-wrap:wrap;justify-content:space-betw
     }, { threshold: 0.35 }).observe(demo);
   }
 
+  var m = document.getElementById('bill-month'), y = document.getElementById('bill-year');
+  function bill(yearly) {
+    m.setAttribute('aria-pressed', String(!yearly));
+    y.setAttribute('aria-pressed', String(yearly));
+    document.querySelectorAll('[data-m]').forEach(function (el) {
+      el.textContent = yearly ? el.dataset.y : el.dataset.m;
+    });
+  }
+  m.addEventListener('click', function () { bill(false); });
+  y.addEventListener('click', function () { bill(true); });
 })();
 </script>
 </body>
